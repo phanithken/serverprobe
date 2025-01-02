@@ -1,6 +1,7 @@
 #!/bin/bash
 # Usage
 # ./setup_nginx_laravel.sh yourdomain.com
+# This script sets up Nginx for a Laravel project.
 
 # Check if domain argument is provided
 if [ $# -eq 0 ]; then
@@ -16,7 +17,7 @@ sudo apt update && sudo apt upgrade -y
 # Install Nginx
 sudo apt install nginx -y
 
-# Install PHP and required extensions
+sudo apt install php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-zip composer -y
 sudo apt install php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-zip -y
 
 # Configure Nginx
@@ -25,8 +26,8 @@ server {
     listen 80;
     server_name $DOMAIN;
     root /var/www/$DOMAIN/public;
-
     add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
     add_header X-Content-Type-Options "nosniff";
 
     index index.php;
@@ -42,9 +43,9 @@ server {
 
     error_page 404 /index.php;
 
-    location ~ \.php$ {
         fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
         fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
+        include fastcgi_params;
         include fastcgi_params;
     }
 

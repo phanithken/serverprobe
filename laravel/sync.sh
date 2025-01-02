@@ -1,17 +1,16 @@
 #!/bin/bash
-# Usage
-# ./sync.sh local_path user@server:/remote_path
 
-# Check if arguments are provided
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 local_path user@server:/remote_path"
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 local_path server domain"
     exit 1
 fi
 
 LOCAL_PATH=$1
-REMOTE_PATH=$2
 
-# Check for changes in package.json locally
+# server is the host in ~/.ssh/config
+SERVER=$2
+REMOTE_PATH="/var/www/$3"
+
 cd $LOCAL_PATH
 if git diff --quiet HEAD package.json; then
     echo "No changes detected in package.json."
@@ -21,12 +20,12 @@ else
 fi
 yarn build
 
-# Sync Laravel files to the remote server
-rsync -avz --progress --exclude=node_modules --exclude=vendor --exclude=.env --exclude=storage/framework/sessions/ $LOCAL_PATH $REMOTE_PATH
+rsync -avz --delete --exclude-from="$LOCAL_PATH/.gitignore" --exclude='.git' --include='public/build' \
+    -e "ssh -o PubkeyAuthentication=no" "$LOCAL_PATH/" "$SERVER:$REMOTE_PATH"
 
-# SSH into the server and set permissions
-ssh $(echo $REMOTE_PATH | cut -d: -f1) <<EOF
-cd $(echo $REMOTE_PATH | cut -d: -f2)
+ssh -o PubkeyAuthentication=no $SERVER <<EOF
+mkdir -p $REMOTE_PATH
+cd $REMOTE_PATH
 composer install --no-dev --optimize-autoloader
 php artisan cache:clear
 php artisan config:clear
