@@ -2,7 +2,7 @@
 # ./create_ssh_user.sh username domain
 
 if [ $# -ne 2 ]; then
-  echo "Usage ./create_ssh_user.sh username"
+  echo "Usage ./create_ssh_user.sh username domain"
   exit 1
 fi
 
@@ -11,7 +11,6 @@ DOMAIN=$2
 
 if id "$USERNAME" &>/dev/null; then
   echo "User $USERNAME already exists. Skipping user creation."
-  exit 1
 else
   sudo adduser --disabled-password --gecos "" $USERNAME
 
