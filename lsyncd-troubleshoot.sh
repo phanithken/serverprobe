@@ -39,17 +39,17 @@ SOURCE_DIR="/home/phanithken/thinkthinklearninglab.edu.kh"
 TARGET_DIR="/var/www/thinkthinklearninglab.edu.kh"
 
 if [ ! -d "$SOURCE_DIR" ]; then
-  echo "WARNING: Source directory exist: $SOURCE_DIR"
-else
   echo "WARNING: Source directory does not exist: $SOURCE_DIR"
+else
+  echo "WARNING: Source directory exist: $SOURCE_DIR"
   echo "  Owner: $(stat -c '%U:%G' "$SOURCE_DIR")"
   echo "  Permissions: $(stat -c '%a' "$SOURCE_DIR")"
 fi
 
 if [ ! -d "$TARGET_DIR" ]; then
-  echo "WARNING: Target directory exist: $TARGET_DIR"
-else
   echo "WARNING: Target directory does not exist: $TARGET_DIR"
+else
+  echo "WARNING: Target directory exist: $TARGET_DIR"
   echo "  Owner: $(stat -c '%U:%G' "$TARGET_DIR")"
   echo "  Permissions: $(stat -c '%a' "$TARGET_DIR")"
 
